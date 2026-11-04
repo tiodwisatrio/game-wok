@@ -1,0 +1,166 @@
+* {
+  box-sizing: border-box;
+}
+
+/* Kotak yang digeser ke tepi tidak boleh memunculkan scrollbar: papan akan bergeser */
+html,
+body {
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  background: #111;
+  color: #3d3528;
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+/* Kamera memenuhi layar seperti cermin, papan di atasnya */
+#camera {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  transform: scaleX(-1);
+}
+
+main {
+  position: relative;
+  z-index: 1;
+  width: min(100vw - 32px, 100vh - 32px);
+}
+
+#hand-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
+#hand-cursor {
+  position: fixed;
+  top: -14px;
+  left: -14px;
+  z-index: 2;
+  width: 28px;
+  height: 28px;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}
+
+#hand-cursor.pinching {
+  border-color: #2ee6a6;
+  background: rgba(46, 230, 166, 0.7);
+}
+
+#hand-cursor[hidden] {
+  display: none;
+}
+
+#board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.cell {
+  aspect-ratio: 1;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.12);
+  transition: box-shadow 0.1s;
+}
+
+.cell.target {
+  box-shadow: 0 0 0 4px #2ee6a6;
+}
+
+.tile {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  font-size: clamp(2rem, 12vw, 3.5rem);
+  font-weight: 700;
+  cursor: grab;
+  user-select: none;
+  /* Agar geser di layar sentuh tidak ikut menggulir halaman */
+  touch-action: none;
+  /* Agak tembus agar tangan tetap terlihat di belakang kotak */
+  opacity: 0.8;
+}
+
+.tile[data-value="32"] {
+  opacity: 1;
+}
+
+.tile img,
+.tile video {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* Video kemenangan menutupi seluruh layar */
+.tile video.fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  width: 100vw;
+  height: 100vh;
+  border-radius: 0;
+  pointer-events: auto;
+}
+
+/* Foto orang dipotong dari atas agar kepala tidak terpotong */
+.tile[data-value="1"] img,
+.tile[data-value="2"] img {
+  object-position: top;
+}
+
+/* Nampan melebar, jadi ditampilkan utuh */
+.tile[data-value="8"] img {
+  object-fit: contain;
+}
+
+.tile.dragging {
+  position: relative;
+  z-index: 1;
+  cursor: grabbing;
+  opacity: 1;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.tile.merged {
+  animation: pop 0.2s ease-out;
+}
+
+.tile[data-value="1"],
+.tile[data-value="2"],
+.tile[data-value="4"],
+.tile[data-value="8"] { background: #fffdf8; }
+
+@keyframes pop {
+  50% { transform: scale(1.15); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tile.merged {
+    animation: none;
+  }
+}
