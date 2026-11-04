@@ -85,7 +85,7 @@ main {
   border: 0;
   border-radius: 14px;
   background: #faf6ee;
-  color: #3d3528;
+  color: #2b2b2b;
 }
 
 #mode-dialog::backdrop {
@@ -102,7 +102,7 @@ main {
   display: block;
   width: 100%;
   padding: 14px 16px;
-  border: 2px solid #3d3528;
+  border: 2px solid #2b2b2b;
   border-radius: 10px;
   background: transparent;
   color: inherit;
@@ -116,16 +116,16 @@ main {
 }
 
 #mode-dialog button:hover {
-  background: #e3d9c6;
+  background: #e6e6e6;
 }
 
 #mode-dialog #camera-on {
-  background: #3d3528;
+  background: #2b2b2b;
   color: #fff;
 }
 
 #mode-dialog #camera-on:hover {
-  background: #5a4e3b;
+  background: #4a4a4a;
 }
 
 #mode-dialog strong,
