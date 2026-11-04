@@ -54,10 +54,8 @@ function render(mergedIndex) {
         video.playsInline = true;
         video.setAttribute('aria-label', value);
         video.addEventListener('ended', closeVideo);
-        // Kalau fullscreen ditolak, video tetap menutupi seluruh jendela browser
-        Promise.resolve(document.documentElement.requestFullscreen?.())
-          .catch(() => {})
-          .then(() => growVideo(video));
+        // Tanpa Fullscreen API agar browser tidak memunculkan notifikasi
+        requestAnimationFrame(() => growVideo(video));
         // Kalau browser menolak video bersuara, putar tanpa suara
         video.play().catch(() => {
           video.muted = true;
@@ -113,9 +111,6 @@ function closeVideo() {
   if (!video) return;
 
   video.pause();
-  if (document.fullscreenElement) {
-    document.exitFullscreen().catch(() => {});
-  }
   start();
 }
 
@@ -207,12 +202,6 @@ window.addEventListener('pointermove', (e) => moveDrag(e.clientX, e.clientY));
 window.addEventListener('pointerup', (e) => drop(e.clientX, e.clientY));
 window.addEventListener('pointercancel', cancelDrag);
 
-// Keluar dari fullscreen (mis. tombol Esc) juga menutup video
-document.addEventListener('fullscreenchange', () => {
-  if (!document.fullscreenElement) closeVideo();
-});
-
-// Esc saat browser menolak fullscreen
 window.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closeVideo();
 });

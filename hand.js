@@ -183,5 +183,21 @@ async function startHandTracking() {
   trackHand();
 }
 
-// Tanpa kamera atau internet, permainan tetap bisa dimainkan dengan mouse
-startHandTracking().catch((error) => console.warn('Kontrol tangan tidak aktif:', error));
+const modeDialog = document.getElementById('mode-dialog');
+
+// Pemain harus memilih mode dulu
+modeDialog.addEventListener('cancel', (e) => e.preventDefault());
+
+document.getElementById('camera-on').addEventListener('click', () => {
+  modeDialog.close();
+  document.body.classList.add('camera-on');
+  // Tanpa izin kamera atau internet, permainan tetap bisa dimainkan dengan mouse
+  startHandTracking().catch((error) => {
+    document.body.classList.remove('camera-on');
+    console.warn('Kontrol tangan tidak aktif:', error);
+  });
+});
+
+document.getElementById('camera-off').addEventListener('click', () => modeDialog.close());
+
+modeDialog.showModal();

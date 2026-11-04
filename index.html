@@ -15,6 +15,17 @@
   </main>
   <canvas id="hand-overlay"></canvas>
   <div id="hand-cursor" hidden></div>
+  <dialog id="mode-dialog" aria-labelledby="mode-title">
+    <h2 id="mode-title">Pilih Mode</h2>
+    <button id="camera-on" type="button" autofocus>
+      <strong>Nyalakan Kamera</strong>
+      <span>Cubit jempol dan telunjuk untuk mengambil kotak, lepas untuk menaruh.</span>
+    </button>
+    <button id="camera-off" type="button">
+      <strong>Tanpa Kamera</strong>
+      <span>Geser kotak dengan mouse atau jari.</span>
+    </button>
+  </dialog>
   <script src="script.js"></script>
   <script src="hand.js"></script>
 </body>
