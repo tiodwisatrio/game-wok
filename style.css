@@ -68,6 +68,17 @@ main {
   display: none;
 }
 
+/* Video kemenangan tampil: tidak ada kursor tangan, rangka tangan, maupun pointer mouse */
+.won,
+.won * {
+  cursor: none;
+}
+
+.won #hand-cursor,
+.won #hand-overlay {
+  display: none;
+}
+
 #mode-dialog {
   width: min(100vw - 32px, 420px);
   padding: 24px;

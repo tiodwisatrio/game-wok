@@ -61,6 +61,8 @@ function isWon() {
 
 function render(mergedIndex, spawned = []) {
   const rows = spawnRows(spawned);
+  // Saat video menang tampil, kursor tangan dan pointer mouse disembunyikan lewat CSS
+  document.body.classList.toggle('won', isWon());
   board.innerHTML = '';
   cells.forEach((value, index) => {
     const cell = document.createElement('div');
