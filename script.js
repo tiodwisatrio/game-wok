@@ -19,6 +19,12 @@ const FIRST_SOUNDS = {
   16: new Audio('assets/sound_jokowi.mp3'),
 };
 
+// Kotak yang muncul lagi tampil per baris (atas, tengah, bawah), tiap baris dengan suaranya
+const spawnSound = new Audio('assets/muncul.mp3');
+const SPAWN_ROW_MS = 300;
+const COLUMNS = 3;
+let spawnTimers = [];
+
 const board = document.getElementById('board');
 
 // Isi tiap kotak: angka, atau null jika kosong
@@ -27,16 +33,34 @@ let reached;
 let drag = null;
 
 function start() {
+  spawnTimers.forEach(clearTimeout);
+  spawnTimers = [];
   cells = Array(9).fill(1);
   reached = new Set();
   render();
+}
+
+// Baris yang punya kotak baru, dari atas ke bawah
+function spawnRows(spawned) {
+  return [...new Set(spawned.map((index) => Math.floor(index / COLUMNS)))].sort((a, b) => a - b);
+}
+
+function playSpawnSounds(spawned) {
+  spawnTimers = spawnRows(spawned).map((_, order) =>
+    setTimeout(() => {
+      spawnSound.currentTime = 0;
+      // Browser bisa menolak memutar suara; permainan tetap jalan tanpa suara
+      spawnSound.play().catch(() => {});
+    }, order * SPAWN_ROW_MS),
+  );
 }
 
 function isWon() {
   return cells.includes(TARGET);
 }
 
-function render(mergedIndex) {
+function render(mergedIndex, spawned = []) {
+  const rows = spawnRows(spawned);
   board.innerHTML = '';
   cells.forEach((value, index) => {
     const cell = document.createElement('div');
@@ -48,6 +72,10 @@ function render(mergedIndex) {
       // Animasi transform membuat video fullscreen mengikuti ukuran kotak
       tile.className = index === mergedIndex && !VIDEOS[value] ? 'tile merged' : 'tile';
       tile.dataset.value = value;
+      if (spawned.includes(index)) {
+        tile.classList.add('spawn');
+        tile.style.animationDelay = `${rows.indexOf(Math.floor(index / COLUMNS)) * SPAWN_ROW_MS}ms`;
+      }
       if (VIDEOS[value]) {
         const video = document.createElement('video');
         video.src = VIDEOS[value];
@@ -189,12 +217,15 @@ function drop(x, y) {
     sound.play().catch(() => {});
   }
 
+  let spawned = [];
   if (isWon()) {
     stopSounds();
   } else if (isStuck()) {
+    spawned = cells.flatMap((value, index) => (value === null ? [index] : []));
     cells = cells.map((value) => value ?? 1);
   }
-  render(merging ? to : undefined);
+  render(merging ? to : undefined, spawned);
+  playSpawnSounds(spawned);
 }
 
 board.addEventListener('pointerdown', (e) => grab(e.clientX, e.clientY));

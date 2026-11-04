@@ -212,6 +212,11 @@ main {
   animation: pop 0.2s ease-out;
 }
 
+/* Tertahan transparan selama delay-nya, lalu muncul membesar */
+.tile.spawn {
+  animation: spawn 0.25s ease-out backwards;
+}
+
 .tile[data-value="1"],
 .tile[data-value="2"],
 .tile[data-value="4"],
@@ -221,8 +226,16 @@ main {
   50% { transform: scale(1.15); }
 }
 
+@keyframes spawn {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .tile.merged {
+  .tile.merged,
+  .tile.spawn {
     animation: none;
   }
 }
